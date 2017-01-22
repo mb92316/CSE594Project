@@ -64,16 +64,16 @@ public class MainActivity extends AppCompatActivity {
             noteList.setAdapter(simpleCursorAdapter);
             noteList.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
-                public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                        long arg3)
+                public void onItemClick(AdapterView<?> adaptView, View view, int newInt,
+                                        long newLong)
                 {
-                    LinearLayout linearLayoutParent = (LinearLayout) arg1;
-                    LinearLayout linearLayoutChild = (LinearLayout) linearLayoutParent.getChildAt(0);
-                    TextView m = (TextView) linearLayoutChild.getChildAt(1);
-                    Bundle dataBundle = new Bundle();
-                    dataBundle.putInt("id", Integer.parseInt(m.getText().toString()));
+                    LinearLayout parent = (LinearLayout) view;
+                    LinearLayout child = (LinearLayout) parent.getChildAt(0);
+                    TextView m = (TextView) child.getChildAt(1);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("id", Integer.parseInt(m.getText().toString()));
                     Intent intent = new Intent(getApplicationContext(), NoteHelper.class);
-                    intent.putExtras(dataBundle);
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
             });
