@@ -21,12 +21,11 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/test1"
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#4286f4"
-        />
+        android:layout_height="wrap_content"
+        android:id="@+id/list2" />
+
 
     <EditText
         android:id="@+id/notetext"
@@ -34,11 +33,5 @@
         android:layout_height="100dp"
         android:background="#b5bfce" />
 
-
-    <ListView android:id="@+id/list2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:scrollbarStyle="outsideOverlay" />
 
 </LinearLayout>
