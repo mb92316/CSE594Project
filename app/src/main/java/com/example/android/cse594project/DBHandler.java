@@ -6,20 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
 public class DBHandler extends SQLiteOpenHelper {
-
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "noteDB.db";
     public static final String TABLE_NAME = "notes_table";
-
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NOTE = "Note";
-
-    public DBHandler(Context context, String name,
-                       SQLiteDatabase.CursorFactory factory, int version) {
+    public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String create_products_table = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -27,13 +23,11 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(create_products_table);
     }
 
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
-
 
     public Cursor getNotes()
     {
@@ -43,8 +37,7 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             return cursor;
         }
-        else
-        {
+        else {
             return null;
         }
     }
@@ -56,5 +49,4 @@ public class DBHandler extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
         //db.close();
     }
-
 }

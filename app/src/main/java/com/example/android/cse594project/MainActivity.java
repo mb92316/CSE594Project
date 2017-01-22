@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     public void newNote(View view){
         Intent intent = new Intent(this, AddNote.class);
         startActivityForResult(intent, 1);
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -55,12 +54,7 @@ public class MainActivity extends AppCompatActivity {
                     R.id.noteID,
                     R.id.noteName
             };
-            simpleCursorAdapter = new SimpleCursorAdapter(this,
-                    R.layout.list_item,
-                    cursor,
-                    columns,
-                    fields,
-                    0);
+            simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.list_item, cursor, columns, fields, 0);
             noteList.setAdapter(simpleCursorAdapter);
             noteList.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
