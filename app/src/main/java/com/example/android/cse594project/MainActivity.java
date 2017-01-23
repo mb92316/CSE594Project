@@ -47,8 +47,9 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = dbHandler.getNotes();
         if (cursor!=null) {
             String[] columns = new String[]{
-                    DBHandler.COLUMN_NOTE,
-                    DBHandler.COLUMN_ID
+                    DBHandler.COLUMN_ID,
+                    DBHandler.COLUMN_NOTE
+
             };
             int[] fields = new int[]{
                     R.id.noteID,
@@ -64,11 +65,15 @@ public class MainActivity extends AppCompatActivity {
                     LinearLayout parent = (LinearLayout) view;
                     LinearLayout child = (LinearLayout) parent.getChildAt(0);
                     TextView m = (TextView) child.getChildAt(1);
+                    TextView k = (TextView) child.getChildAt(0);
+                    String noteText = k.getText().toString();
                     Bundle bundle = new Bundle();
-                    bundle.putInt("id", Integer.parseInt(m.getText().toString()));
+                    int id = Integer.parseInt(m.getText().toString());
+                    bundle.putInt("id", id);
+                    bundle.putString("notetext", noteText);
                     Intent intent = new Intent(getApplicationContext(), NoteHelper.class);
                     intent.putExtras(bundle);
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
                 }
             });
         }

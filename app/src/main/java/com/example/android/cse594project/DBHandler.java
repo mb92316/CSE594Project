@@ -49,4 +49,18 @@ public class DBHandler extends SQLiteOpenHelper {
         db.insert(TABLE_NAME, null, values);
         //db.close();
     }
+
+    public void deleteNote(int id) {
+        String idString[] = {Integer.toString(id)};
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", idString);
+    }
+
+    public void updateNote(int id, String n)
+    {
+        ContentValues note = new ContentValues();
+        note.put(COLUMN_NOTE, n);
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.update(TABLE_NAME, note, "_id = ? ", new String[]{Integer.toString(id)});
+    }
 }
