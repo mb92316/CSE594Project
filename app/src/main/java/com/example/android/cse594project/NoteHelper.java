@@ -24,14 +24,12 @@ public class NoteHelper extends AppCompatActivity {
         noteField.setText(noteText);
     }
 
-    public void deleteNote(View view)
-    {
+    public void deleteNote(View view) {
         dbHandler.deleteNote(id);
         finish();
     }
 
-    public void updateNote(View view)
-    {
+    public void updateNote(View view) {
         String n = noteField.getText().toString();
         dbHandler.updateNote(id, n);
         finish();
