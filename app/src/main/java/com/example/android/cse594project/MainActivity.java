@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         dbHandler = new DBHandler(this, null, null, 1);
         noteField = (EditText) findViewById(R.id.notetext);
         noteList = (ListView) findViewById(R.id.list);
-       // test();
+        test();
         showNotes();
     }
 
@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                     .setRandomizedEncryptionRequired(false)
+                    .setUserAuthenticationValidityDurationSeconds(999)
                     .build());
             keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException | NoSuchProviderException
