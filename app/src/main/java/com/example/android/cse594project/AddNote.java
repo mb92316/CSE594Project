@@ -40,7 +40,8 @@ public class AddNote extends AppCompatActivity {
         dbHandler.addNote(encryptedNote);
         finish();
 
-        /*
+
+/*
         try {
             String note = noteField.getText().toString();
             String encryptedString;
@@ -48,26 +49,26 @@ public class AddNote extends AppCompatActivity {
             byte[] noteBytes;
             GetKey key = new GetKey();
             SecretKey secretKey = key.getKey();
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
 
             byte[] ivbytes = new byte[ 16 ];
             IvParameterSpec iv = new IvParameterSpec(ivbytes);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
             noteBytes = note.getBytes("utf-8");
             encryptedNote = cipher.doFinal(noteBytes);
-            byte[] ivAndCipherText = getCombinedArray(ivbytes, encryptedNote);
            //encryptedString = Base64.encodeToString(ivAndCipherText, Base64.NO_WRAP);
              encryptedString = Base64.encodeToString(encryptedNote, Base64.DEFAULT);
             dbHandler.addNote(encryptedString);
             finish();
         } catch (UserNotAuthenticatedException e) {
             finish();
-        } catch (BadPaddingException | UnsupportedEncodingException| IllegalBlockSizeException| InvalidAlgorithmParameterException
+        } catch (BadPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
                 | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
-*/
+        */
     }
+
 
         /*
     private static byte[] getCombinedArray(byte[] one, byte[] two) {

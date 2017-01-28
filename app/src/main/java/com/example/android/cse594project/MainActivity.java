@@ -4,6 +4,8 @@ import android.app.KeyguardManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,8 +15,16 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         showNotes();
     }
 
-/*
     public void test() {
         try {
             KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
@@ -86,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException("Failed to create a symmetric key", e);
         }
     }
-*/
+
 
 
     public void newNote(View view) {
