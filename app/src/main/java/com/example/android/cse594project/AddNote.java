@@ -1,26 +1,12 @@
 package com.example.android.cse594project;
 
 import android.os.Bundle;
-import android.security.keystore.KeyProperties;
-import android.security.keystore.UserNotAuthenticatedException;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 
 public class AddNote extends AppCompatActivity {
     DBHandler dbHandler;
@@ -46,29 +32,51 @@ public class AddNote extends AppCompatActivity {
         dbHandler.addNote(n);
         finish();
         */
+
+
+        String n = noteField.getText().toString();
+        TokenEncryptor tokenEncryptor = new TokenEncryptor();
+        String encryptedNote = tokenEncryptor.encrypt(n);
+        dbHandler.addNote(encryptedNote);
+        finish();
+
+        /*
         try {
             String note = noteField.getText().toString();
             String encryptedString;
             byte[] encryptedNote;
             byte[] noteBytes;
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyStore.load(null);
-            SecretKey secretKey = (SecretKey) keyStore.getKey(KEY_NAME, null);
-            Cipher cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/"
-                            + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+            GetKey key = new GetKey();
+            SecretKey secretKey = key.getKey();
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            noteBytes = note.getBytes();
-            encryptedNote= cipher.doFinal(noteBytes);
-            encryptedString = Base64.encodeToString(encryptedNote, Base64.DEFAULT);
+            byte[] ivbytes = new byte[ 16 ];
+            IvParameterSpec iv = new IvParameterSpec(ivbytes);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+            noteBytes = note.getBytes("utf-8");
+            encryptedNote = cipher.doFinal(noteBytes);
+            byte[] ivAndCipherText = getCombinedArray(ivbytes, encryptedNote);
+           //encryptedString = Base64.encodeToString(ivAndCipherText, Base64.NO_WRAP);
+             encryptedString = Base64.encodeToString(encryptedNote, Base64.DEFAULT);
             dbHandler.addNote(encryptedString);
             finish();
         } catch (UserNotAuthenticatedException e) {
             finish();
-        } catch (BadPaddingException | IllegalBlockSizeException | KeyStoreException |
-                CertificateException | UnrecoverableKeyException | IOException
+        } catch (BadPaddingException | UnsupportedEncodingException| IllegalBlockSizeException| InvalidAlgorithmParameterException
                 | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
+*/
     }
+
+        /*
+    private static byte[] getCombinedArray(byte[] one, byte[] two) {
+        byte[] combined = new byte[one.length + two.length];
+        for (int i = 0; i < combined.length; ++i) {
+            combined[i] = i < one.length ? one[i] : two[i - one.length];
+        }
+        return combined;
+    }
+    */
+
 }
