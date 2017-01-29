@@ -47,7 +47,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_NOTE, note);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_NAME, null, values);
-        //db.close();
     }
 
     public void deleteNote(int id) {

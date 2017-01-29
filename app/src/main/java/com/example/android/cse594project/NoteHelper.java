@@ -31,7 +31,8 @@ public class NoteHelper extends AppCompatActivity {
 
     public void updateNote(View view) {
         String n = noteField.getText().toString();
-        dbHandler.updateNote(id, n);
+        String encryptedNote = Crypt.encrypt(n);
+        dbHandler.updateNote(id, encryptedNote );
         finish();
     }
 }

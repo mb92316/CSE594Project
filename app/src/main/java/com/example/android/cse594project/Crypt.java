@@ -8,24 +8,19 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
-public class TokenEncryptor {
+public class Crypt {
 
-    private final static String TOKEN_KEY = "fqJfdzGDvfwbedsKSUGty3VZ9taXxMVw";
-
-    public static String encrypt(String plain) {
+    public static String encrypt(String plaintext) {
         try {
             GetKey key = new GetKey();
             SecretKey secretKey = key.getKey();
-            //byte[] iv = new byte[16];
-           // new SecureRandom().nextBytes(iv);
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
-
             byte[] ivbytes = new byte[ 16 ];
             IvParameterSpec iv = new IvParameterSpec(ivbytes);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-            byte[] cipherText = cipher.doFinal(plain.getBytes("utf-8"));
-            byte[] ivAndCipherText = getCombinedArray(ivbytes, cipherText);
-            return Base64.encodeToString(ivAndCipherText, Base64.NO_WRAP);
+            byte[] cipherText = cipher.doFinal(plaintext.getBytes("utf-8"));
+            byte[] combinedBytes = combine(ivbytes, cipherText);
+            return Base64.encodeToString(combinedBytes, Base64.NO_WRAP);
         } catch (Exception e) {
             return null;
         }
@@ -35,13 +30,12 @@ public class TokenEncryptor {
         try {
             GetKey key = new GetKey();
             SecretKey secretKey = key.getKey();
-            byte[] ivAndCipherText = Base64.decode(encoded, Base64.NO_WRAP);
-            byte[] iv = Arrays.copyOfRange(ivAndCipherText, 0, 16);
-            byte[] cipherText = Arrays.copyOfRange(ivAndCipherText, 16, ivAndCipherText.length);
-
-            //Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            byte[] combinedBytes = Base64.decode(encoded, Base64.NO_WRAP);
+            byte[] ivBytes = Arrays.copyOfRange(combinedBytes, 0, 16);
+            byte[] cipherText = Arrays.copyOfRange(combinedBytes, 16, combinedBytes.length);
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
+            IvParameterSpec iv = new IvParameterSpec(ivBytes);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
             return new String(cipher.doFinal(cipherText), "utf-8");
         } catch (Exception e) {
 
@@ -49,7 +43,7 @@ public class TokenEncryptor {
         }
     }
 
-    private static byte[] getCombinedArray(byte[] one, byte[] two) {
+    private static byte[] combine(byte[] one, byte[] two) {
         byte[] combined = new byte[one.length + two.length];
         for (int i = 0; i < combined.length; ++i) {
             combined[i] = i < one.length ? one[i] : two[i - one.length];

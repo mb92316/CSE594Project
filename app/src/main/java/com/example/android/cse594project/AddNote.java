@@ -6,14 +6,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.security.KeyStore;
 
 public class AddNote extends AppCompatActivity {
     DBHandler dbHandler;
     EditText noteField;
     ListView noteList;
-    KeyStore keyStore;
-    String KEY_NAME = "my_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,60 +21,10 @@ public class AddNote extends AppCompatActivity {
         noteList = (ListView) findViewById(R.id.list);
     }
 
-
     public void addNote(View view) {
-        /*
-        WITHOUT ENCRPYTION
         String n = noteField.getText().toString();
-        dbHandler.addNote(n);
-        finish();
-        */
-
-
-        String n = noteField.getText().toString();
-        TokenEncryptor tokenEncryptor = new TokenEncryptor();
-        String encryptedNote = tokenEncryptor.encrypt(n);
+        String encryptedNote = Crypt.encrypt(n);
         dbHandler.addNote(encryptedNote);
         finish();
-
-
-/*
-        try {
-            String note = noteField.getText().toString();
-            String encryptedString;
-            byte[] encryptedNote;
-            byte[] noteBytes;
-            GetKey key = new GetKey();
-            SecretKey secretKey = key.getKey();
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
-
-            byte[] ivbytes = new byte[ 16 ];
-            IvParameterSpec iv = new IvParameterSpec(ivbytes);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-            noteBytes = note.getBytes("utf-8");
-            encryptedNote = cipher.doFinal(noteBytes);
-           //encryptedString = Base64.encodeToString(ivAndCipherText, Base64.NO_WRAP);
-             encryptedString = Base64.encodeToString(encryptedNote, Base64.DEFAULT);
-            dbHandler.addNote(encryptedString);
-            finish();
-        } catch (UserNotAuthenticatedException e) {
-            finish();
-        } catch (BadPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
-                | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
-        */
     }
-
-
-        /*
-    private static byte[] getCombinedArray(byte[] one, byte[] two) {
-        byte[] combined = new byte[one.length + two.length];
-        for (int i = 0; i < combined.length; ++i) {
-            combined[i] = i < one.length ? one[i] : two[i - one.length];
-        }
-        return combined;
-    }
-    */
-
 }
