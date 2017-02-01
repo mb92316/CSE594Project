@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     DBHandler dbHandler;
     SimpleCursorAdapter simpleCursorAdapter;
     String KEY_NAME = "my_key";
+    String PIN_KEY = "pin_key";
     private static final String AndroidKeyStore = "AndroidKeyStore";
     SecretKey secretKey;
 
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                     .setRandomizedEncryptionRequired(false)
-                    .setUserAuthenticationValidityDurationSeconds(999)
                     .build());
             keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException | NoSuchProviderException
@@ -100,14 +100,6 @@ public class MainActivity extends AppCompatActivity {
     public void showNotes() {
         Cursor cursor = dbHandler.getNotes();
         if (cursor != null) {
-            String[] columns = new String[]{
-                    DBHandler.COLUMN_ID,
-                    DBHandler.COLUMN_NOTE
-            };
-            int[] fields = new int[]{
-                    R.id.noteID,
-                    R.id.noteName
-            };
 
             noteCursor c = new noteCursor(this, cursor);
             noteList.setAdapter(c);

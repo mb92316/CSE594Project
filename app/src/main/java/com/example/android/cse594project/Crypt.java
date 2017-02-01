@@ -18,8 +18,12 @@ public class Crypt {
             byte[] ivbytes = new byte[ 16 ];
             IvParameterSpec iv = new IvParameterSpec(ivbytes);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+           // byte[] cipherText = cipher.doFinal(plaintext.getBytes("utf-8"));
+            //byte[] combinedBytes = combine(ivbytes, cipherText);
             byte[] cipherText = cipher.doFinal(plaintext.getBytes("utf-8"));
-            byte[] combinedBytes = combine(ivbytes, cipherText);
+            byte[] combinedBytes= new byte[cipherText.length + ivbytes.length];
+            System.arraycopy(ivbytes,0,combinedBytes,0         ,ivbytes.length);
+            System.arraycopy(cipherText,0,combinedBytes,ivbytes.length,cipherText.length);
             return Base64.encodeToString(combinedBytes, Base64.NO_WRAP);
         } catch (Exception e) {
             return null;
