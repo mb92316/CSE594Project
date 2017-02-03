@@ -3,6 +3,7 @@ package com.example.android.cse594project;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
@@ -45,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
     String KEY_NAME = "my_key";
     String PIN_KEY = "pin_key";
     Boolean showBool = false;
+    int pinBool;
     private static final byte[] SECRET_BYTE_ARRAY = new byte[] {1, 2, 3, 4, 5, 6};
-
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +58,15 @@ public class MainActivity extends AppCompatActivity {
         dbHandler = new DBHandler(this, null, null, 1);
         noteField = (EditText) findViewById(R.id.notetext);
         noteList = (ListView) findViewById(R.id.list);
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        pinBool = pref.getInt("pinpadInt", 0);
         keyCheck();
-        tryEncrypt();
+        if(pinBool == 1) {
+            tryEncrypt();
+        }
+        else {
+            showBool = true;
+        }
         showNotes();
     }
 
