@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -79,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
-
 
     private void createKey() {
         try {
@@ -152,6 +152,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void settings(View view) {
+        Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
+    }
 
     public void newNote(View view) {
         Intent intent = new Intent(this, AddNote.class);
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
+            Toast.makeText(this, "Noted Added", Toast.LENGTH_LONG).show();
             showNotes();
         }
 
