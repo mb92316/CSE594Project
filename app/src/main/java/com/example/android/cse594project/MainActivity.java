@@ -175,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            Toast.makeText(this, "Noted Added", Toast.LENGTH_LONG).show();
+            String newText = data.getStringExtra("noteinfo");
+            Toast.makeText(this, newText, Toast.LENGTH_LONG).show();
             showNotes();
         }
 

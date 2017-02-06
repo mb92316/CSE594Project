@@ -1,5 +1,7 @@
 package com.example.android.cse594project;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,6 +27,9 @@ public class AddNote extends AppCompatActivity {
         String n = noteField.getText().toString();
         String encryptedNote = Crypt.encrypt(n);
         dbHandler.addNote(encryptedNote);
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("noteinfo", "Note Added");
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 }
