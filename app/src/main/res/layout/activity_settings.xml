@@ -15,8 +15,7 @@
         android:id="@+id/testtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text = "Pinpad Lock Screen"
-        />
+        android:text = "Pinpad Lock Screen" />
 
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"

@@ -43,10 +43,18 @@ public class MainActivity extends AppCompatActivity {
     EditText noteField;
     ListView noteList;
     DBHandler dbHandler;
+
+    //Key to encrypt notes
     String KEY_NAME = "my_key";
+
+    //Key used during pinpad and fingerprint unlock
     String PIN_KEY = "pin_key";
+
+    //The boolean to show notes if pinpad and fingerpad unlock works
     Boolean showBool = false;
     int pinBool;
+
+    //This is the test byte that is used by the pinpad and fingerpad unlock
     private static final byte[] SECRET_BYTE_ARRAY = new byte[] {1, 2, 3, 4, 5, 6};
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -70,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
         showNotes();
     }
 
+
+    /*
+
+    This is used to check if the keys needed to encrypt notes or unlock the screen have been created.
+    If not, this will call the respective generate keys.
+     */
     public void keyCheck() {
         try {
             KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
@@ -91,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    //Create the key to encrypt notes
     private void createKey() {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -111,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //Create the key to unlock screen
     private void createPinKey() {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -132,7 +149,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /*
+    Used in the pinpad lock screen. It gets the key that was generated previously and calls a
+    cipher instance using the same properties (AES, CBC, and Padding PKCS7) used to create the key.
+    It will then attempt to encrypt a block of bytes with this key. Because the secret key when
+    generated required UserAuthentication, if the encryption works, the user has recently authenticated.
+    If they have not recently authenticated, showAtuthenticationScreen is called.
+     */
     private void tryEncrypt() {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -154,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    //Calls the Confirm credential API to show the Pinpad login
     private void showAuthenticationScreen() {
         Intent intent = mKeyguardManager.createConfirmDeviceCredentialIntent(null, null);
         if (intent != null) {
@@ -162,21 +185,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Starts settings activitiy when settings button is pressed.
     public void settings(View view) {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
     }
 
+    //Starts newNote activity when add note button is pressed.
     public void newNote(View view) {
         Intent intent = new Intent(this, AddNote.class);
+        //startActivityForResult is a callback. When
         startActivityForResult(intent, 1);
     }
 
+    //This
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            String newText = data.getStringExtra("noteinfo");
-            Toast.makeText(this, newText, Toast.LENGTH_LONG).show();
+
+            if(data != null) {
+                String newText = data.getStringExtra("noteinfo");
+                Toast.makeText(this, newText, Toast.LENGTH_LONG).show();
+            }
             showNotes();
         }
 
@@ -190,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
         if(showBool == true) {
             Cursor cursor = dbHandler.getNotes();
             if (cursor != null) {
-
                 noteCursor c = new noteCursor(this, cursor);
                 noteList.setAdapter(c);
                 noteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

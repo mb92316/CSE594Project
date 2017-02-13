@@ -12,6 +12,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "notes_table";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NOTE = "Note";
+
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
@@ -29,15 +30,13 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public Cursor getNotes()
-    {
+    public Cursor getNotes() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, new String[] {COLUMN_ID, COLUMN_NOTE}, null, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, new String[]{COLUMN_ID, COLUMN_NOTE}, null, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
             return cursor;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -55,11 +54,22 @@ public class DBHandler extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, COLUMN_ID + " = ?", idString);
     }
 
-    public void updateNote(int id, String n)
-    {
+    public void updateNote(int id, String n) {
         ContentValues note = new ContentValues();
         note.put(COLUMN_NOTE, n);
         SQLiteDatabase db = this.getReadableDatabase();
         db.update(TABLE_NAME, note, "_id = ? ", new String[]{Integer.toString(id)});
+    }
+
+
+    public String getNote(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String note = "null";
+        Cursor c = db.query(TABLE_NAME, new String[] {COLUMN_NOTE}, COLUMN_ID + "=" + id, null, null, null, null);
+        if(c.getCount() == 1){
+            c.moveToFirst();
+            note = c.getString(c.getColumnIndex(COLUMN_NOTE));
+        }
+        return note;
     }
 }

@@ -13,6 +13,7 @@ public class GetKey {
     SecretKey secretKey;
     KeyStore keyStore;
     String KEY_NAME = "my_key";
+    String PIN_KEY = "pin_key";
 
     public SecretKey getKey()
     {
@@ -25,6 +26,19 @@ public class GetKey {
         }
         return secretKey;
     }
+
+    public SecretKey getPinKey()
+    {
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            secretKey = (SecretKey) keyStore.getKey(PIN_KEY, null);
+        } catch ( KeyStoreException | NoSuchAlgorithmException | IOException |CertificateException| UnrecoverableEntryException e) {
+            throw new RuntimeException(e);
+        }
+        return secretKey;
+    }
+
 }
 
 
