@@ -62,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
         fingerBool = pref.getInt("fingerInt", 0);
         keyCheck();
 
-        if(pinBool == 1 && fingerBool == 1)
-        {
+        if(pinBool == 1 && fingerBool == 1) {
             fingerprintwithpin();
         }
         else if(pinBool == 1) {
@@ -79,14 +78,12 @@ public class MainActivity extends AppCompatActivity {
         showNotes();
     }
 
-    public void fingerprint()
-    {
+    public void fingerprint() {
         Intent intent = new Intent(this, FingerPrint.class);
         startActivityForResult(intent, 2);
     }
 
-    public void fingerprintwithpin()
-    {
+    public void fingerprintwithpin() {
         Intent intent = new Intent(this, FingerPrint.class);
         startActivityForResult(intent, 3);
     }
@@ -142,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setUserAuthenticationRequired(true)
-                    .setUserAuthenticationValidityDurationSeconds(1)
+                    .setUserAuthenticationValidityDurationSeconds(60)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
                     .build());
             keyGenerator.generateKey();
@@ -230,10 +227,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 3){
             if(data != null) {
                 showBool = true;
-                showNotes();
+                pinAuthenticate();
             }
             else {
-                pinAuthenticate();
+                fingerprint();
             }
         }
     }
