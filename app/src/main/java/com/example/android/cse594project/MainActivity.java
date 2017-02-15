@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             fingerprintwithpin();
         }
         else if(pinBool == 1) {
-            tryEncrypt();
+            pinAuthenticate();
         }
         else if(fingerBool == 1)
         {
@@ -160,8 +160,9 @@ public class MainActivity extends AppCompatActivity {
     generated required UserAuthentication, if the encryption works, the user has recently authenticated.
     If they have not recently authenticated, showAtuthenticationScreen is called.
      */
-    private void tryEncrypt() {
+    private void pinAuthenticate() {
         showAuthenticationScreen();
+        showBool = true;
         /*
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -209,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-
             if(data != null) {
                 String newText = data.getStringExtra("noteinfo");
                 Toast.makeText(this, newText, Toast.LENGTH_LONG).show();
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (requestCode == 3){
-           tryEncrypt();
+           pinAuthenticate();
         }
     }
 

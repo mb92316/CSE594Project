@@ -50,31 +50,37 @@ public class FingerPrint extends AppCompatActivity {
         }
 
         if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.USE_FINGERPRINT) !=
-                PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this,
-                    "Fingerprint authentication permission not enabled",
-                    Toast.LENGTH_LONG).show();
+                Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
             return;
         }
 
         if (!fingerprintManager.hasEnrolledFingerprints()) {
 
-            Toast.makeText(this,
-                    "Register at least one fingerprint in Settings",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Register at least one fingerprint in Settings", Toast.LENGTH_LONG).show();
             return;
         }
         generateKey();
         authenticate();
     }
 
-    public void authenticate()
-    {
+    public void authenticate() {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
 
+            try {
+                cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
+            } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+
+            }
+            SecretKey key = (SecretKey) keyStore.getKey(FINGERKEY, null);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
+            FingerprintHandler helper = new FingerprintHandler(this);
+            helper.startAuth(fingerprintManager, cryptoObject);
+
+            /*
             if (cipherInit()) {
                 FingerprintManager.CryptoObject cryptoObject = new FingerprintManager.CryptoObject(cipher);
                 FingerprintHandler helper = new FingerprintHandler(this);
@@ -85,10 +91,15 @@ public class FingerPrint extends AppCompatActivity {
                 | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-    }
+        */
 
-    public void success()
-    {
+        }  catch(KeyPermanentlyInvalidatedException e){
+
+        }catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException | NoSuchAlgorithmException | InvalidKeyException
+                        e){
+        }
+    }
+    public void success() {
         finish();
     }
 
