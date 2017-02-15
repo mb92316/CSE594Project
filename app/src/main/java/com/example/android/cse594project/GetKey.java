@@ -27,7 +27,6 @@ public class GetKey {
         return secretKey;
     }
 
-    /*
     public SecretKey getPinKey()
     {
         try {
@@ -39,8 +38,6 @@ public class GetKey {
         }
         return secretKey;
     }
-    */
-
 }
 
 

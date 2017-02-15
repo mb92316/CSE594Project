@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     //The boolean to show notes if pinpad and fingerpad unlock works
     Boolean showBool = false;
     int pinBool;
-
+    int fingerBool;
     //This is the test byte that is used by the pinpad and fingerpad unlock
     private static final byte[] SECRET_BYTE_ARRAY = new byte[] {1, 2, 3, 4, 5, 6};
     SharedPreferences pref;
@@ -68,14 +68,36 @@ public class MainActivity extends AppCompatActivity {
         noteList = (ListView) findViewById(R.id.list);
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         pinBool = pref.getInt("pinpadInt", 0);
+        fingerBool = pref.getInt("fingerInt", 0);
         keyCheck();
-        if(pinBool == 1) {
+
+        if(pinBool == 1 && fingerBool == 1)
+        {
+            fingerprintwithpin();
+        }
+        else if(pinBool == 1) {
             tryEncrypt();
+        }
+        else if(fingerBool == 1)
+        {
+            fingerprint();
         }
         else {
             showBool = true;
         }
         showNotes();
+    }
+
+    public void fingerprint()
+    {
+        Intent intent = new Intent(this, FingerPrint.class);
+        startActivityForResult(intent, 2);
+    }
+
+    public void fingerprintwithpin()
+    {
+        Intent intent = new Intent(this, FingerPrint.class);
+        startActivityForResult(intent, 3);
     }
 
     /*
@@ -93,11 +115,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             entry = ks.getEntry(PIN_KEY, null);
-            if (entry == null)
-            {
-                createPinKey();
-            }
 
+                createPinKey();
         } catch ( KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
             throw new RuntimeException(e);
         }
@@ -209,6 +228,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 2){
             showBool = true;
             showNotes();
+        }
+
+        if (requestCode == 3){
+           tryEncrypt();
         }
     }
 

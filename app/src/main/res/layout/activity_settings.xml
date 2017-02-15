@@ -12,7 +12,7 @@
     tools:context="com.example.android.cse594project.Settings">
 
     <TextView
-        android:id="@+id/testtext"
+        android:id="@+id/pintext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text = "Pinpad Lock Screen" />
@@ -35,5 +35,32 @@
             android:text="Off"
             android:onClick="Pinpad"/>
     </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/fingertext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "Fingerprint Lock Screen" />
+
+    <RadioGroup
+        android:id="@+id/fingerGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton android:id="@+id/fingerOnButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="On"
+            android:onClick="fingerprint"/>
+
+        <RadioButton android:id="@+id/fingerOffButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Off"
+            android:onClick="fingerprint"/>
+    </RadioGroup>
+
 
 </LinearLayout>
