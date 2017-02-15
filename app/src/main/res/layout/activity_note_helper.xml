@@ -10,9 +10,6 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary">
 
-
-
-
         <Button
             android:id="@+id/savebutton"
             android:layout_width="wrap_content"
@@ -20,15 +17,12 @@
             android:onClick="updateNote"
             android:text="Save" />
 
-
         <Button
             android:id="@+id/alarmbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Set Alarm" />
-
-
 
         <Button
             android:id="@+id/deletebutton"

@@ -12,7 +12,7 @@ import javax.crypto.SecretKey;
 public class GetKey {
     SecretKey secretKey;
     KeyStore keyStore;
-    String KEY_NAME = "my_key";
+    String KEY_NAME = "note_key";
     String PIN_KEY = "pin_key";
 
     public SecretKey getKey()
@@ -27,6 +27,7 @@ public class GetKey {
         return secretKey;
     }
 
+    /*
     public SecretKey getPinKey()
     {
         try {
@@ -38,6 +39,7 @@ public class GetKey {
         }
         return secretKey;
     }
+    */
 
 }
 

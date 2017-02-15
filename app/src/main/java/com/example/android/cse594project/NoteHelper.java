@@ -61,8 +61,6 @@ public class NoteHelper extends AppCompatActivity implements DatePickerDialog.On
         });
     }
 
-
-
     public void deleteNote(View view) {
         dbHandler.deleteNote(id);
         Intent resultIntent = new Intent();
@@ -116,12 +114,10 @@ public class NoteHelper extends AppCompatActivity implements DatePickerDialog.On
     }
 
     private void scheduleNotification(Notification notification, long delay) {
-
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 20);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this.getApplicationContext(), 23433, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 23433, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
     }

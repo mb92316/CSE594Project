@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     DBHandler dbHandler;
 
     //Key to encrypt notes
-    String KEY_NAME = "my_key";
+    String KEY_NAME = "note_key";
 
     //Key used during pinpad and fingerprint unlock
     String PIN_KEY = "pin_key";
@@ -78,9 +78,7 @@ public class MainActivity extends AppCompatActivity {
         showNotes();
     }
 
-
     /*
-
     This is used to check if the keys needed to encrypt notes or unlock the screen have been created.
     If not, this will call the respective generate keys.
      */
@@ -105,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     //Create the key to encrypt notes
     private void createKey() {
         try {
@@ -125,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException("Failed to create a symmetric key", e);
         }
     }
-
 
     //Create the key to unlock screen
     private void createPinKey() {

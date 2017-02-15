@@ -17,17 +17,18 @@
         android:layout_height="wrap_content"
         android:text = "Pinpad Lock Screen" />
 
-
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    <RadioGroup
         android:id="@+id/pinGroup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RadioButton android:id="@+id/pinOnButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="On"
             android:onClick="Pinpad"/>
+
         <RadioButton android:id="@+id/pinOffButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
