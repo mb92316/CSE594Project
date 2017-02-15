@@ -218,12 +218,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (requestCode == 2){
-            showBool = true;
-            showNotes();
+            if(data != null) {
+                showBool = true;
+                showNotes();
+            }
+            else {
+                fingerprint();
+            }
         }
 
         if (requestCode == 3){
-           pinAuthenticate();
+            if(data != null) {
+                showBool = true;
+                showNotes();
+            }
+            else {
+                pinAuthenticate();
+            }
         }
     }
 
