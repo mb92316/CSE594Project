@@ -10,11 +10,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.android.cse594project.FingerPrint">
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="touch sensor"
-        />
+        android:text="Touch Fingerprint Sensor"
+        android:layout_marginTop="29dp"
+        android:layout_below="@+id/fingerimage"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/fingerimage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_action_fingerprint"
+        android:paddingTop="2dp"
+        android:layout_marginTop="46dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
