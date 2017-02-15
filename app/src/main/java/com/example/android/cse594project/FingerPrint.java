@@ -1,7 +1,9 @@
 package com.example.android.cse594project;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.KeyguardManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
@@ -28,11 +30,9 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 public class FingerPrint extends AppCompatActivity {
-    private FingerprintManager.CryptoObject cryptoObject;
     FingerprintManager fingerprintManager;
     KeyguardManager keyguardManager;
     KeyStore keyStore;
-    GetKey getKey;
     Cipher cipher;
     String FINGERKEY = "finger_key";
     @Override
@@ -100,6 +100,9 @@ public class FingerPrint extends AppCompatActivity {
         }
     }
     public void success() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("resultcode", 1);
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 
