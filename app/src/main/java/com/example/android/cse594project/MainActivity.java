@@ -97,12 +97,13 @@ public class MainActivity extends AppCompatActivity {
             KeyStore ks = KeyStore.getInstance("AndroidKeyStore");
             ks.load(null);
             KeyStore.Entry entry = ks.getEntry(KEY_NAME, null);
-            if (entry == null)
-            {
+            if (entry == null) {
                 createKey();
             }
 
+            if (mKeyguardManager.isKeyguardSecure()) {
                 createPinKey();
+            }
         } catch ( KeyStoreException | CertificateException | IOException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
             throw new RuntimeException(e);
         }
