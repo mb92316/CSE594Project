@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,24 +27,45 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
     DBHandler dbHandler;
     int id;
     String noteText;
-    Button b_pick;
+    Button notificationButton;
+    Button voiceButton;
     Crypt crypt;
     int day, month, year, hour, minute;
     int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
-
+    int choice;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+    int alarmID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        b_pick = (Button) findViewById(R.id.alarmbutton);
+        notificationButton = (Button) findViewById(R.id.alarmbutton);
+        voiceButton = (Button) findViewById(R.id.voicebutton);
         Bundle extras = getIntent().getExtras();
         noteText = extras.getString("notetext");
+        id = extras.getInt("id");
         dbHandler = new DBHandler(this, null, null, 1);
         crypt = new Crypt();
-        b_pick.setOnClickListener(new View.OnClickListener() {
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        alarmID = pref.getInt("AlarmID", 0);
+        notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                choice = 1;
+                Calendar c = Calendar.getInstance();
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Alarm.this, Alarm.this, year, month, day);
+                datePickerDialog.show();
+            }
+        });
+        voiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                choice = 2;
                 Calendar c = Calendar.getInstance();
                 year = c.get(Calendar.YEAR);
                 month = c.get(Calendar.MONTH);
@@ -52,6 +75,7 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
             }
         });
     }
+
 
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         yearFinal = i;
@@ -64,7 +88,6 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
                 hour, minute, DateFormat.is24HourFormat(this));
         timePickerDialog.show();
     }
-
 
     public void onTimeSet(TimePicker view, int i, int i1) {
         hourFinal   = i;
@@ -82,17 +105,46 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         System.out.println(diff);
         String encryptedalarmNote = dbHandler.getNote(id);
         String alarmNote = crypt.decrypt(encryptedalarmNote);
-        scheduleNotification(getNotification(alarmNote), diff);
+        if(choice == 1) {
+            scheduleNotification(getNotification(alarmNote), diff);
+        }
+        else if(choice == 2) {
+            scheduleNotification(noteText, diff);
+        }
+        else{
+            Toast.makeText(this, "something broke", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void scheduleNotification(Notification notification, long delay) {
+        editor = pref.edit();
+        alarmID++;
+        editor.putInt("AlarmID", alarmID);
+        editor.commit();
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 20);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 23433, notificationIntent, 0);
+        notificationIntent.putExtra("id", id);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
     }
+
+
+    private void scheduleNotification(String notification, long delay) {
+        editor = pref.edit();
+        alarmID++;
+        editor.putInt("AlarmID", alarmID);
+        editor.commit();
+        Intent notificationIntent = new Intent(this, AlarmPublisher.class);
+        notificationIntent.putExtra(AlarmPublisher.NOTIFICATION_ID, 20);
+        notificationIntent.putExtra(AlarmPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this.getApplicationContext(), alarmID, notificationIntent, 0);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
+    }
+
 
     private Notification getNotification(String content) {
         Notification.Builder builder = new Notification.Builder(this);
@@ -101,5 +153,4 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         builder.setSmallIcon(R.drawable.ic_launcher);
         return builder.build();
     }
-
 }
