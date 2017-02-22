@@ -2,6 +2,7 @@ package com.example.android.cse594project;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -44,7 +45,6 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         voiceButton = (Button) findViewById(R.id.voicebutton);
         Bundle extras = getIntent().getExtras();
         noteText = extras.getString("notetext");
-        id = extras.getInt("id");
         dbHandler = new DBHandler(this, null, null, 1);
         crypt = new Crypt();
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
@@ -103,40 +103,50 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         long diff = d1.getTime() - date.getTime();
         System.out.println(diff);
         if(choice == 1) {
-            scheduleNoteNotification(diff);
+            scheduleNotification(getNotification(noteText), diff);
         }
         else if(choice == 2) {
-            scheduleVoiceNotification(diff);
+            scheduleNotification(noteText, diff);
         }
         else{
             Toast.makeText(this, "something broke", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void scheduleNoteNotification(long delay) {
+    private void scheduleNotification(Notification notification, long delay) {
         editor = pref.edit();
         alarmID++;
         editor.putInt("AlarmID", alarmID);
         editor.commit();
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 20);
-        notificationIntent.putExtra("id", id);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
     }
 
 
-    private void scheduleVoiceNotification(long delay) {
+    private void scheduleNotification(String notification, long delay) {
         editor = pref.edit();
         alarmID++;
         editor.putInt("AlarmID", alarmID);
         editor.commit();
         Intent notificationIntent = new Intent(this, AlarmPublisher.class);
         notificationIntent.putExtra(AlarmPublisher.NOTIFICATION_ID, 20);
-        notificationIntent.putExtra("id", id);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
+        notificationIntent.putExtra(AlarmPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
+    }
+
+
+    private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        return builder.build();
     }
 }
