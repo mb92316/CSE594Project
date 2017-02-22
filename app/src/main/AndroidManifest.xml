@@ -23,11 +23,12 @@
 
         <receiver android:name=".NotificationPublisher">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE"></action>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".FingerPrint"></activity>
+        <activity android:name=".FingerPrint" />
+        <activity android:name=".Alarm"></activity>
     </application>
 
 </manifest>
