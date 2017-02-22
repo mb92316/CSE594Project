@@ -29,7 +29,7 @@ public class NoteHelper extends AppCompatActivity {
         noteField = (EditText) findViewById(R.id.updatenotetext);
         noteField.setText(noteText);
         /*
-        b_pick.setOnClickListener(new View.OnClickListener() {
+        notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar c = Calendar.getInstance();
@@ -62,10 +62,10 @@ public class NoteHelper extends AppCompatActivity {
         finish();
     }
 
-    public void alarm(View view)
-    {
+    public void alarm(View view) {
         Bundle bundle = new Bundle();
         bundle.putString("notetext", noteText);
+        bundle.putInt("id", id);
         Intent intent = new Intent(getApplicationContext(), Alarm.class);
         intent.putExtras(bundle);
         startActivity(intent);

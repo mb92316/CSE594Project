@@ -3,7 +3,7 @@
     package="com.example.android.cse594project">
 
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,8 +27,18 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".AlarmPublisher">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".FingerPrint" />
         <activity android:name=".Alarm"></activity>
+        <service
+            android:name=".TTS"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
