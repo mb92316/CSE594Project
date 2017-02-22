@@ -8,10 +8,11 @@ import android.content.Intent;
 
 
 public class NotificationPublisher extends BroadcastReceiver {
-    DBHandler dbHandler;
+
     public static String NOTIFICATION_ID = "notification-id";
     public static String NOTIFICATION = "notification";
     String note;
+    DBHandler dbHandler;
     Crypt crypt;
     Context mcontext;
     int id;
@@ -20,11 +21,13 @@ public class NotificationPublisher extends BroadcastReceiver {
         mcontext = context;
         noteID = intent.getIntExtra("id", 0);
         getNote();
-        note = crypt.decrypt(note);
-        NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = getNotification(note);
-        id = intent.getIntExtra(NOTIFICATION_ID, 0);
-        notificationManager.notify(id, notification);
+        if(note != null) {
+            note = crypt.decrypt(note);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification notification = getNotification(note);
+            id = intent.getIntExtra(NOTIFICATION_ID, 0);
+            notificationManager.notify(id, notification);
+        }
     }
 
     public void getNote() {
