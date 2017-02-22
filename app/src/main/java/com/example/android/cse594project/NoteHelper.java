@@ -1,45 +1,26 @@
 package com.example.android.cse594project;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.DatePickerDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.TimePicker;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-public class NoteHelper extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+public class NoteHelper extends AppCompatActivity {
 
     DBHandler dbHandler;
     int id;
     String noteText;
     EditText noteField;
     Button b_pick;
-    TextView tv_result;
     Crypt crypt;
-    int day, month, year, hour, minute;
-    int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_helper);
-        b_pick = (Button) findViewById(R.id.alarmbutton);
         Bundle extras = getIntent().getExtras();
         id = extras.getInt("id");
         noteText = extras.getString("notetext");
@@ -47,6 +28,7 @@ public class NoteHelper extends AppCompatActivity implements DatePickerDialog.On
         crypt = new Crypt();
         noteField = (EditText) findViewById(R.id.updatenotetext);
         noteField.setText(noteText);
+        /*
         b_pick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,7 +40,7 @@ public class NoteHelper extends AppCompatActivity implements DatePickerDialog.On
                         year, month, day);
                 datePickerDialog.show();
             }
-        });
+        }); */
     }
 
     public void deleteNote(View view) {
@@ -80,7 +62,17 @@ public class NoteHelper extends AppCompatActivity implements DatePickerDialog.On
         finish();
     }
 
+    public void alarm(View view)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString("notetext", noteText);
+        Intent intent = new Intent(getApplicationContext(), Alarm.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 
+
+    /*
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         yearFinal = i;
         monthFinal = i1 + 1;
@@ -129,5 +121,6 @@ public class NoteHelper extends AppCompatActivity implements DatePickerDialog.On
         builder.setSmallIcon(R.drawable.ic_launcher);
         return builder.build();
     }
+    */
 }
 
