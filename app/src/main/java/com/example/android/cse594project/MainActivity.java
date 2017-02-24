@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         showNotes();
     }
 
+
     public void fingerprint() {
         Intent intent = new Intent(this, FingerPrint.class);
         startActivityForResult(intent, 2);

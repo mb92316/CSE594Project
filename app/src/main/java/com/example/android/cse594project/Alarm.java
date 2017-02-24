@@ -127,6 +127,8 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
         dbHandler.updateDate(id, dateString );
+        dbHandler.updateAlarm(id, alarmID);
+        dbHandler.updateAlarmType(id, 1);
         finish();
     }
 
@@ -143,6 +145,38 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
         dbHandler.updateDate(id, dateString );
+        dbHandler.updateAlarm(id, alarmID);
+        dbHandler.updateAlarmType(id, 2);
         finish();
+    }
+
+    public void cancelAlarm(View view){
+
+        int currentAlarmID = dbHandler.getAlarm(id);
+        int alarmType = dbHandler.getAlarmType(id);
+
+        if (alarmType == 1){
+            Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+            notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 20);
+            notificationIntent.putExtra("id", id);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
+            AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent);
+            dbHandler.updateDate(id, "null");
+            finish();
+        }
+        else if(alarmType == 2) {
+            Intent notificationIntent = new Intent(this, AlarmPublisher.class);
+            notificationIntent.putExtra(AlarmPublisher.NOTIFICATION_ID, 20);
+            notificationIntent.putExtra("id", id);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), currentAlarmID, notificationIntent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent);
+            dbHandler.updateDate(id, "null");
+            finish();
+        }
+        else{
+            Toast.makeText(this, "No alarm set", Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -77,15 +77,15 @@ public class NoteHelper extends AppCompatActivity {
     public void getDate() {
        TextView alarmField = (TextView) findViewById(R.id.alarmfield);
         String date =  dbHandler.getDate(id);
-        if(date != "null") {
+        if(!date.equals("null")) {
             alarmField.setText("Alarm: " + date);
         }
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         getDate();
     }
+
     /*
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         yearFinal = i;
