@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
@@ -125,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (NoSuchAlgorithmException | NoSuchProviderException
                 | InvalidAlgorithmParameterException | KeyStoreException
                 | CertificateException | IOException e) {
+            Toast.makeText(this, "Failed to create a symmetric key for note encryption", Toast.LENGTH_LONG).show();
             throw new RuntimeException("Failed to create a symmetric key", e);
         }
     }
@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (NoSuchAlgorithmException | NoSuchProviderException
                 | InvalidAlgorithmParameterException | KeyStoreException
                 | CertificateException | IOException e) {
+            Toast.makeText(this, "Failed to create a symmetric key for pinpad", Toast.LENGTH_LONG).show();
             throw new RuntimeException("Failed to create a symmetric key", e);
         }
     }

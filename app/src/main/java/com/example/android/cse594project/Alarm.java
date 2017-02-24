@@ -29,6 +29,7 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
     Button notificationButton;
     Button voiceButton;
     Crypt crypt;
+    String dateString;
     int day, month, year, hour, minute;
     int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
     int choice;
@@ -101,6 +102,7 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
             System.out.println("Unparseable using " + ft);
         }
         long diff = d1.getTime() - date.getTime();
+        dateString = ft.format(d1);
         System.out.println(diff);
         if(choice == 1) {
             scheduleNoteNotification(diff);
@@ -124,6 +126,8 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
+        dbHandler.updateDate(id, dateString );
+        finish();
     }
 
 
@@ -138,5 +142,7 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
+        dbHandler.updateDate(id, dateString );
+        finish();
     }
 }

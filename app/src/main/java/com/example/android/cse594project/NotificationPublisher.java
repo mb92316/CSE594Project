@@ -37,10 +37,9 @@ public class NotificationPublisher extends BroadcastReceiver {
 
     private Notification getNotification(String content) {
         Notification.Builder builder = new Notification.Builder(mcontext);
-        builder.setContentTitle("Scheduled Notification");
+        builder.setContentTitle("ALARM!");
         builder.setContentText(content);
         builder.setSmallIcon(R.drawable.ic_launcher);
         return builder.build();
     }
-
 }

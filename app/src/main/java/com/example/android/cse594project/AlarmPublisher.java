@@ -3,12 +3,10 @@ package com.example.android.cse594project;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.speech.tts.TextToSpeech;
 
 public class AlarmPublisher extends BroadcastReceiver {
 
     String note;
-    private TextToSpeech tts;
     public static String NOTIFICATION_ID = "notification-id";
     public static String NOTIFICATION = "notification";
     DBHandler dbHandler;
@@ -17,7 +15,6 @@ public class AlarmPublisher extends BroadcastReceiver {
     int id;
     public void onReceive(Context context, Intent intent) {
         mcontext = context;
-        //noteText = intent.getStringExtra(NOTIFICATION);
         Intent intent1 = new Intent(context, TTS.class);
         id = intent.getIntExtra("id", 0);
         getNote();
@@ -32,6 +29,5 @@ public class AlarmPublisher extends BroadcastReceiver {
         dbHandler = new DBHandler(mcontext, null, null, 1);
         note = dbHandler.getNote(id);
     }
-
 }
 

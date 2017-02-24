@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,9 +42,7 @@ public class FingerPrint extends AppCompatActivity {
         fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
         if (!keyguardManager.isKeyguardSecure()) {
 
-            Toast.makeText(this,
-                    "Lock screen security not enabled in Settings",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Lock screen security not enabled in Settings", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -93,10 +90,10 @@ public class FingerPrint extends AppCompatActivity {
         }
         */
 
-        }  catch(KeyPermanentlyInvalidatedException e){
-
-        }catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException | NoSuchAlgorithmException | InvalidKeyException
+        }catch (KeyStoreException | CertificateException | UnrecoverableKeyException| IOException | NoSuchAlgorithmException | InvalidKeyException
                         e){
+            Toast.makeText(this, "Failed to create a symmetric key for pinpad", Toast.LENGTH_LONG).show();
+            throw new RuntimeException("Failed to create a symmetric key", e);
         }
     }
     public void success() {
@@ -131,24 +128,6 @@ public class FingerPrint extends AppCompatActivity {
                 InvalidAlgorithmParameterException
                 | CertificateException | IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    public boolean cipherInit() {
-        try {
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_CBC + "/" + KeyProperties.ENCRYPTION_PADDING_PKCS7);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            return false;
-        }
-        try {
-            keyStore.load(null);
-            SecretKey key = (SecretKey) keyStore.getKey(FINGERKEY, null);
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            return true;
-        } catch (KeyPermanentlyInvalidatedException e) {
-            return false;
-        } catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
-            return false;
         }
     }
 }

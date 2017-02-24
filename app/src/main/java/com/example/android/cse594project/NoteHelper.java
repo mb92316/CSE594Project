@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class NoteHelper extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class NoteHelper extends AppCompatActivity {
         crypt = new Crypt();
         noteField = (EditText) findViewById(R.id.updatenotetext);
         noteField.setText(noteText);
+        getDate();
         /*
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,10 +70,22 @@ public class NoteHelper extends AppCompatActivity {
         bundle.putInt("id", id);
         Intent intent = new Intent(getApplicationContext(), Alarm.class);
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
 
+    public void getDate() {
+       TextView alarmField = (TextView) findViewById(R.id.alarmfield);
+        String date =  dbHandler.getDate(id);
+        if(date != "null") {
+            alarmField.setText("Alarm: " + date);
+        }
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        getDate();
+    }
     /*
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         yearFinal = i;

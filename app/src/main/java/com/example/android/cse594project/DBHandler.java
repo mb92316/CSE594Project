@@ -12,6 +12,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "notes_table";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NOTE = "Note";
+    public static final String COLUMN_DATE = "Date";
 
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -20,7 +21,7 @@ public class DBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String create_products_table = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NOTE + " TEXT )";
+                COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NOTE + " TEXT" + COLUMN_DATE + " TEXT )";
         db.execSQL(create_products_table);
     }
 
@@ -44,6 +45,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addNote(String note) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NOTE, note);
+        values.put(COLUMN_DATE, "null");
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_NAME, null, values);
     }
@@ -71,5 +73,16 @@ public class DBHandler extends SQLiteOpenHelper {
             note = c.getString(c.getColumnIndex(COLUMN_NOTE));
         }
         return note;
+    }
+
+    public String getDate(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String date = "null";
+        Cursor c = db.query(TABLE_NAME, new String[] {COLUMN_DATE}, COLUMN_ID + "=" + id, null, null, null, null);
+        if(c.getCount() == 1){
+            c.moveToFirst();
+            date = c.getString(c.getColumnIndex(COLUMN_DATE));
+        }
+        return date;
     }
 }
