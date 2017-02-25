@@ -222,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
             }
             showNotes();
         }
-
         if (requestCode == 2){
             if(data != null) {
                 showBool = true;
@@ -245,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showNotes() {
-
         if(showBool == true) {
             Cursor cursor = dbHandler.getNotes();
             if (cursor != null) {
@@ -277,43 +275,57 @@ public class MainActivity extends AppCompatActivity {
 
     public void delete(int pos, int side){
         View g = noteList.getAdapter().getView(pos, null, noteList);
+        Animation animation = null;
         if(side == 1){
-            noteList.getChildAt(pos).startAnimation(outToRightAnimation());
+            animation = outToRightAnimation();
+            noteList.getChildAt(pos).startAnimation(animation);
         }
         else if(side == 2) {
-            noteList.getChildAt(pos).startAnimation(outToLeftAnimation());
+            animation = outToLeftAnimation();
+            noteList.getChildAt(pos).startAnimation(animation);
         }
+        animation.setAnimationListener(new Animation.AnimationListener(){
+            @Override
+            public void onAnimationStart(Animation arg0) {
+            }
+            @Override
+            public void onAnimationRepeat(Animation arg0) {
+            }
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                showNotes();
+            }
+        });
         LinearLayout parent = (LinearLayout) g;
         LinearLayout child = (LinearLayout) parent.getChildAt(0);
         TextView m = (TextView) child.getChildAt(1);
         int id = Integer.parseInt(m.getText().toString());
         dbHandler.deleteNote(id);
-        showNotes();
         Toast.makeText(this, "Note deleted", Toast.LENGTH_LONG).show();
     }
 
     private Animation outToLeftAnimation() {
-        int duration = 500;
+        int duration = 200;
         Animation outtoLeft = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, -1.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f);
         outtoLeft.setDuration(duration);
-        outtoLeft.setInterpolator(new AccelerateInterpolator(3));
+        outtoLeft.setInterpolator(new AccelerateInterpolator(1));
         return outtoLeft;
     }
 
     private Animation outToRightAnimation() {
-        int duration = 500;
+        int duration = 200;
         Animation outtoRight = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, +1.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f);
         outtoRight.setDuration(duration);
-        outtoRight.setInterpolator(new AccelerateInterpolator(3));
+        outtoRight.setFillAfter(true);
+        outtoRight.setInterpolator(new AccelerateInterpolator(1));
         return outtoRight;
     }
-
 }
