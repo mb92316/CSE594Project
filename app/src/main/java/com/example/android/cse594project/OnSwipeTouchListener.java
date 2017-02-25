@@ -33,12 +33,12 @@ public class OnSwipeTouchListener implements OnTouchListener {
 
     public void onSwipeRight(int pos) {
         MainActivity main = (MainActivity) context;
-        main.delete(pos);
+        main.delete(pos, 1);
     }
 
     public void onSwipeLeft(int pos) {
         MainActivity main = (MainActivity) context;
-        main.delete(pos);
+        main.delete(pos, 2);
     }
 
     private final class GestureListener extends SimpleOnGestureListener {

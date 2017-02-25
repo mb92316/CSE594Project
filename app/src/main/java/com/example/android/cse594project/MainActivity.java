@@ -10,12 +10,16 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
@@ -271,12 +275,45 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void delete(int pos){
+    public void delete(int pos, int side){
         View g = noteList.getAdapter().getView(pos, null, noteList);
+        if(side == 1){
+            noteList.getChildAt(pos).startAnimation(outToRightAnimation());
+        }
+        else if(side == 2) {
+            noteList.getChildAt(pos).startAnimation(outToLeftAnimation());
+        }
         LinearLayout parent = (LinearLayout) g;
         LinearLayout child = (LinearLayout) parent.getChildAt(0);
         TextView m = (TextView) child.getChildAt(1);
         int id = Integer.parseInt(m.getText().toString());
-        dbHandler.deleteNoteCB(id,this);
+        dbHandler.deleteNote(id);
+        showNotes();
+        Toast.makeText(this, "Note deleted", Toast.LENGTH_LONG).show();
     }
+
+    private Animation outToLeftAnimation() {
+        int duration = 500;
+        Animation outtoLeft = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, -1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        outtoLeft.setDuration(duration);
+        outtoLeft.setInterpolator(new AccelerateInterpolator(3));
+        return outtoLeft;
+    }
+
+    private Animation outToRightAnimation() {
+        int duration = 500;
+        Animation outtoRight = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, +1.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        outtoRight.setDuration(duration);
+        outtoRight.setInterpolator(new AccelerateInterpolator(3));
+        return outtoRight;
+    }
+
 }
