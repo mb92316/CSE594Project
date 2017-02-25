@@ -61,6 +61,16 @@ public class DBHandler extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, COLUMN_ID + " = ?", idString);
     }
 
+    public void deleteNoteCB(int id, Context context) {
+        String idString[] = {Integer.toString(id)};
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", idString);
+        MainActivity main = (MainActivity) context;
+        main.showNotes();
+    }
+
+
+
     public void updateNote(int id, String n) {
         ContentValues note = new ContentValues();
         note.put(COLUMN_NOTE, n);

@@ -30,10 +30,11 @@ import javax.crypto.KeyGenerator;
 public class MainActivity extends AppCompatActivity {
 
     KeyguardManager mKeyguardManager;
+    public Context mcontext;
+    public int k;
     EditText noteField;
     ListView noteList;
-    DBHandler dbHandler;
-
+    static DBHandler dbHandler;
     //Key to encrypt notes
     String KEY_NAME = "note_key";
 
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mcontext = this.getApplicationContext();
         setContentView(R.layout.activity_main);
         mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         dbHandler = new DBHandler(this, null, null, 1);
@@ -239,11 +241,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showNotes() {
+
         if(showBool == true) {
             Cursor cursor = dbHandler.getNotes();
             if (cursor != null) {
                 noteCursor c = new noteCursor(this, cursor);
                 noteList.setAdapter(c);
+
                 noteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> adaptView, View view, int newInt,
                                             long newLong) {
@@ -261,7 +265,18 @@ public class MainActivity extends AppCompatActivity {
                         startActivityForResult(intent, 1);
                     }
                 });
+                noteList.setOnTouchListener(new OnSwipeTouchListener(this, mcontext,
+                        noteList));
             }
         }
+    }
+
+    public void delete(int pos){
+        View g = noteList.getAdapter().getView(pos, null, noteList);
+        LinearLayout parent = (LinearLayout) g;
+        LinearLayout child = (LinearLayout) parent.getChildAt(0);
+        TextView m = (TextView) child.getChildAt(1);
+        int id = Integer.parseInt(m.getText().toString());
+        dbHandler.deleteNoteCB(id,this);
     }
 }
