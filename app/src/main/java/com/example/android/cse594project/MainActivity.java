@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     EditText noteField;
     ListView noteList;
     static DBHandler dbHandler;
+
     //Key to encrypt notes
     String KEY_NAME = "note_key";
 
@@ -241,6 +242,21 @@ public class MainActivity extends AppCompatActivity {
                 fingerprint();
             }
         }
+        /*
+        if (requestCode == 4) {
+            if (resultCode == RESULT_OK && null != data) {
+
+                ArrayList<String> result = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                Toast.makeText(this, result.get(0), Toast.LENGTH_LONG).show();
+                if(result.get(0).equals("add")){
+                    Intent intent = new Intent(this, AddNote.class);
+                    startActivityForResult(intent, 1);
+                }
+
+            }
+        }
+        */
     }
 
     public void showNotes() {
@@ -277,11 +293,13 @@ public class MainActivity extends AppCompatActivity {
         View g = noteList.getAdapter().getView(pos, null, noteList);
         Animation animation = null;
         if(side == 1){
-            animation = outToRightAnimation();
+            float direction = 1;
+            animation = deleteAnimation(direction);
             noteList.getChildAt(pos).startAnimation(animation);
         }
         else if(side == 2) {
-            animation = outToLeftAnimation();
+            float direction = -1;
+            animation = deleteAnimation(direction);
             noteList.getChildAt(pos).startAnimation(animation);
         }
         animation.setAnimationListener(new Animation.AnimationListener(){
@@ -303,6 +321,36 @@ public class MainActivity extends AppCompatActivity {
         dbHandler.deleteNote(id);
         Toast.makeText(this, "Note deleted", Toast.LENGTH_LONG).show();
     }
+
+    private Animation deleteAnimation(float direction) {
+        int duration = 200;
+        Animation outtoLeft = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, direction,
+                Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f);
+        outtoLeft.setDuration(duration);
+        outtoLeft.setInterpolator(new AccelerateInterpolator(1));
+        return outtoLeft;
+    }
+
+/*
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "SPEAK");
+        try {
+            startActivityForResult(intent, 4);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(), "SPEAK", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void command(View view) {
+        promptSpeechInput();
+    }
+
 
     private Animation outToLeftAnimation() {
         int duration = 200;
@@ -328,4 +376,5 @@ public class MainActivity extends AppCompatActivity {
         outtoRight.setInterpolator(new AccelerateInterpolator(1));
         return outtoRight;
     }
+    */
 }

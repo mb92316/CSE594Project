@@ -29,20 +29,8 @@ public class NoteHelper extends AppCompatActivity {
         crypt = new Crypt();
         noteField = (EditText) findViewById(R.id.updatenotetext);
         noteField.setText(noteText);
+        noteField.setSelection(noteField.getText().length());
         getDate();
-        /*
-        notificationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar c = Calendar.getInstance();
-                year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH);
-                day = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(NoteHelper.this, NoteHelper.this,
-                        year, month, day);
-                datePickerDialog.show();
-            }
-        }); */
     }
 
     public void deleteNote(View view) {
@@ -52,7 +40,6 @@ public class NoteHelper extends AppCompatActivity {
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
-
 
     public void updateNote(View view) {
         String n = noteField.getText().toString();
@@ -73,68 +60,19 @@ public class NoteHelper extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
-
     public void getDate() {
        TextView alarmField = (TextView) findViewById(R.id.alarmfield);
         String date =  dbHandler.getDate(id);
         if(!date.equals("null")) {
             alarmField.setText("Alarm: " + date);
         }
+        else {
+            alarmField.setText("Alarm: ");
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         getDate();
     }
-
-    /*
-    public void onDateSet(DatePicker view, int i, int i1, int i2) {
-        yearFinal = i;
-        monthFinal = i1 + 1;
-        dayFinal = i2;
-        Calendar c = Calendar.getInstance();
-        hour=c.get(Calendar.HOUR_OF_DAY);
-        minute=c.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(NoteHelper.this, NoteHelper.this,
-                hour, minute, DateFormat.is24HourFormat(this));
-        timePickerDialog.show();
-    }
-
-
-    public void onTimeSet(TimePicker view, int i, int i1) {
-        hourFinal   = i;
-        minuteFinal = i1;
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm");
-        String test = yearFinal + "-" + monthFinal + "-" + dayFinal + " " + hourFinal + ":" + minuteFinal;
-        Date date = new Date();
-        Date d1 = new Date();
-        try {
-            d1 = ft.parse(test);
-        }catch (ParseException e) {
-            System.out.println("Unparseable using " + ft);
-        }
-        long diff = d1.getTime() - date.getTime();
-        System.out.println(diff);
-        String encryptedalarmNote = dbHandler.getNote(id);
-        String alarmNote = crypt.decrypt(encryptedalarmNote);
-        scheduleNotification(getNotification(alarmNote), diff);
-    }
-
-    private void scheduleNotification(Notification notification, long delay) {
-        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 20);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 23433, notificationIntent, 0);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
-    }
-
-    private Notification getNotification(String content) {
-        Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Scheduled Notification");
-        builder.setContentText(content);
-        builder.setSmallIcon(R.drawable.ic_launcher);
-        return builder.build();
-    }
-    */
 }
 

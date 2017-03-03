@@ -18,6 +18,8 @@
             android:onClick="addNote"
             android:text="Save" />
 
+
+
     </RelativeLayout>
 
     <RelativeLayout
