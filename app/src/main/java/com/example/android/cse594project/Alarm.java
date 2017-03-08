@@ -76,7 +76,6 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         });
     }
 
-
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         yearFinal = i;
         monthFinal = i1 + 1;
@@ -96,6 +95,11 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         String test = yearFinal + "-" + monthFinal + "-" + dayFinal + " " + hourFinal + ":" + minuteFinal;
         Date date = new Date();
         Date d1 = new Date();
+        int alarmID = dbHandler.getAlarm(id);
+        int alarmType = dbHandler.getAlarmType(id);
+        if(alarmID != -1) {
+            cancel(alarmID, alarmType);
+        }
         try {
             d1 = ft.parse(test);
         }catch (ParseException e) {
@@ -104,14 +108,17 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         long diff = d1.getTime() - date.getTime();
         dateString = ft.format(d1);
         System.out.println(diff);
-        if(choice == 1) {
-            scheduleNoteNotification(diff);
-        }
-        else if(choice == 2) {
-            scheduleVoiceNotification(diff);
+        if(diff > 0) {
+            if (choice == 1) {
+                scheduleNoteNotification(diff);
+            } else if (choice == 2) {
+                scheduleVoiceNotification(diff);
+            } else {
+                Toast.makeText(this, "something broke", Toast.LENGTH_LONG).show();
+            }
         }
         else{
-            Toast.makeText(this, "something broke", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Set a date/time in the future", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -121,7 +128,6 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         editor.putInt("AlarmID", alarmID);
         editor.commit();
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 20);
         notificationIntent.putExtra("id", id);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
@@ -139,7 +145,6 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         editor.putInt("AlarmID", alarmID);
         editor.commit();
         Intent notificationIntent = new Intent(this, AlarmPublisher.class);
-        notificationIntent.putExtra(AlarmPublisher.NOTIFICATION_ID, 20);
         notificationIntent.putExtra("id", id);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
@@ -154,6 +159,10 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
 
         int currentAlarmID = dbHandler.getAlarm(id);
         int alarmType = dbHandler.getAlarmType(id);
+        if(alarmID != -1) {
+            cancel(currentAlarmID, alarmType);
+        }
+        /*
 
         if (alarmType == 1){
             Intent notificationIntent = new Intent(this, NotificationPublisher.class);
@@ -178,5 +187,34 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         else{
             Toast.makeText(this, "No alarm set", Toast.LENGTH_LONG).show();
         }
+        */
+    }
+
+    public void cancel(int currentAlarmID, int alarmType){
+        if (alarmType == 1){
+            Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+            notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 20);
+            notificationIntent.putExtra("id", id);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
+            AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent);
+            finish();
+        }
+        else if(alarmType == 2) {
+            Intent notificationIntent = new Intent(this, AlarmPublisher.class);
+            notificationIntent.putExtra(AlarmPublisher.NOTIFICATION_ID, 20);
+            notificationIntent.putExtra("id", id);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), currentAlarmID, notificationIntent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent);
+            finish();
+        }
+        else{
+            Toast.makeText(this, "No alarm set", Toast.LENGTH_LONG).show();
+        }
+        dbHandler.updateDate(id, "null");
+        dbHandler.updateAlarmType(id, -1);
+        dbHandler.updateAlarm(id, -1);
+        finish();
     }
 }

@@ -25,9 +25,12 @@ public class NotificationPublisher extends BroadcastReceiver {
             note = crypt.decrypt(note);
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification notification = getNotification(note);
-            id = intent.getIntExtra(NOTIFICATION_ID, 0);
+            id = intent.getIntExtra("id", 0);
             notificationManager.notify(id, notification);
         }
+        dbHandler.updateDate(id, "null");
+        dbHandler.updateAlarmType(id, -1);
+        dbHandler.updateAlarm(id, -1);
     }
 
     public void getNote() {

@@ -5,6 +5,7 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
@@ -25,6 +27,15 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "baskerville_old_face.ttf");
+        TextView mySetTextview = (TextView) findViewById(R.id.settingsText);
+        TextView myPinTextview = (TextView) findViewById(R.id.pintext);
+        TextView myFingTextview = (TextView) findViewById(R.id.fingertext);
+        mySetTextview.setTypeface(myTypeface);
+        myPinTextview.setTypeface(myTypeface);
+        myFingTextview.setTypeface(myTypeface);
+
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         int pinBool = pref.getInt("pinpadInt", 0);
         int fingerBool = pref.getInt("fingerInt", 0);
@@ -106,8 +117,5 @@ public class Settings extends AppCompatActivity {
                 break;
         }
     }
-
-
-
 }
 
