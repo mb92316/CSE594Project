@@ -3,12 +3,12 @@
 
     <item
         android:checkable="true"
-        android:id="@+id/pinpad"
+        android:id="@+id/pinpaditem"
         android:title="Pinpad Lock Screen" />
 
     <item
         android:checkable="true"
-        android:id="@+id/fingerprint"
+        android:id="@+id/fingerprintitem"
         android:title="Fingerprint Lock Screen"
         />
 

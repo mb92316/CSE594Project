@@ -1,14 +1,20 @@
 package com.example.android.cse594project;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class AddNote extends AppCompatActivity {
     DBHandler dbHandler;
@@ -23,8 +29,10 @@ public class AddNote extends AppCompatActivity {
 
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "baskerville_old_face.ttf");
         Button myButton = (Button) findViewById(R.id.savebutton);
+        Button myVoiceButton = (Button) findViewById(R.id.voicebutton);
         EditText myEditText = (EditText) findViewById(R.id.notetext);
         myButton.setTypeface(myTypeface);
+        myVoiceButton.setTypeface(myTypeface);
         myEditText.setTypeface(myTypeface);
 
         dbHandler = new DBHandler(this, null, null, 1);
@@ -44,20 +52,16 @@ public class AddNote extends AppCompatActivity {
         finish();
     }
 
-/*
+
     private void promptSpeechInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                "SPEAK");
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
         } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(),
-                    "SPEAK",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -81,8 +85,5 @@ public class AddNote extends AppCompatActivity {
             }
         }
     }
-    */
-
-
 
 }

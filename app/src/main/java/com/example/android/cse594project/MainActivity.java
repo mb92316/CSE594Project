@@ -1,20 +1,23 @@
 package com.example.android.cse594project;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
+import android.speech.RecognizerIntent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.PopupMenu;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,9 +40,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 
 import javax.crypto.KeyGenerator;
 
+import static com.example.android.cse594project.R.id.pinpaditem;
 public class MainActivity extends AppCompatActivity {
 
     KeyguardManager mKeyguardManager;
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     EditText noteField;
     ListView noteList;
     static DBHandler dbHandler;
-
+    FingerprintManager fingerprintManager;
     //Key to encrypt notes
     String KEY_NAME = "note_key";
 
@@ -68,21 +73,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mcontext = this.getApplicationContext();
         setContentView(R.layout.activity_main);
-
+        fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "baskerville_old_face.ttf");
         Button mySettingsButton = (Button) findViewById(R.id.settings);
         Button myCloudNotesButton = (Button) findViewById(R.id.cloudNotes);
         Button myAddNoteButton = (Button) findViewById(R.id.addNote);
+        Button myVoiceButton = (Button) findViewById(R.id.voicecommand);
         mySettingsButton.setTypeface(myTypeface);
         myCloudNotesButton.setTypeface(myTypeface);
         myAddNoteButton.setTypeface(myTypeface);
-
-
+        myVoiceButton.setTypeface(myTypeface);
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         dbHandler = new DBHandler(this, null, null, 1);
         noteField = (EditText) findViewById(R.id.notetext);
         noteList = (ListView) findViewById(R.id.list);
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+
         pinBool = pref.getInt("pinpadInt", 0);
         fingerBool = pref.getInt("fingerInt", 0);
         keyCheck();
@@ -93,9 +100,8 @@ public class MainActivity extends AppCompatActivity {
         else if(pinBool == 1) {
             pinAuthenticate();
         }
-        else if(fingerBool == 1)
-        {
-            fingerprint();
+        else if(fingerBool == 1) {
+           fingerprint();
         }
         else {
             showBool = true;
@@ -105,13 +111,40 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void fingerprint() {
-        Intent intent = new Intent(this, FingerPrint.class);
-        startActivityForResult(intent, 2);
+        editor = pref.edit();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+        }
+        if (fingerprintManager.hasEnrolledFingerprints()){
+
+            Intent intent = new Intent(this, FingerPrint.class);
+            startActivityForResult(intent, 2);
+        }
+        else{
+            editor.putInt("fingerInt", 0);
+            editor.commit();
+            Toast.makeText(this, "No enrolled fingerprints, fingerprint unlock disabled", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void fingerprintwithpin() {
-        Intent intent = new Intent(this, FingerPrint.class);
-        startActivityForResult(intent, 3);
+
+        editor = pref.edit();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+        }
+        if (fingerprintManager.hasEnrolledFingerprints()){
+
+            Intent intent = new Intent(this, FingerPrint.class);
+            startActivityForResult(intent, 3);
+        }
+        else{
+            editor.putInt("fingerInt", 0);
+            editor.commit();
+            Toast.makeText(this, "No enrolled fingerprints, fingerprint unlock disabled", Toast.LENGTH_LONG).show();
+        }
     }
 
     /*
@@ -250,23 +283,73 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo){
         super.onCreateContextMenu(menu, view, menuInfo);
+        pinBool = pref.getInt("pinpadInt", 0);
+        fingerBool = pref.getInt("fingerInt", 0);
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.settings_menu, menu);
+        MenuItem pinItem =  menu.findItem(R.id.pinpaditem);
+        MenuItem fingerprintItem = menu.findItem(R.id.fingerprintitem);
+        if(pinBool == 1) {
+            pinItem.setChecked(true);
+        }
+        else{
+            pinItem.setChecked(false);
+        }
+        if(fingerBool == 1) {
 
+            fingerprintItem.setChecked(true);
+        }
+        else {
+            fingerprintItem.setChecked(false);
+        }
         MenuItem menuItem = menu.findItem(R.id.cancelbutton);
+
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item){
+        editor = pref.edit();
         switch (item.getItemId()){
-            case R.id.pinpad:
-                // do something
-                Toast.makeText(getApplicationContext(), "Pinpad", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.fingerprint:
-                //do somthing
-                Toast.makeText(getApplicationContext(), "Fingerprint", Toast.LENGTH_SHORT).show();
-                return  true;
+            case pinpaditem:
+                if(pinBool == 0) {
+                    if (mKeyguardManager.isKeyguardSecure()) {
+                        editor.putInt("pinpadInt", 1);
+                        editor.commit();
+                        Toast.makeText(this, "Pin lock screen set", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Please set a lock screen", Toast.LENGTH_LONG).show();
+                    }
+                    return true;
+                }
+                else {
+                    editor.putInt("pinpadInt", 0);
+                    editor.commit();
+                    Toast.makeText(this, "Pin lock screen disabled", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            case R.id.fingerprintitem:
+                if(fingerBool == 0) {
+                    if (ActivityCompat.checkSelfPermission(this,
+                            Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(this, "Fingerprint authentication permission not enabled", Toast.LENGTH_LONG).show();
+                        return true;
+                    }
+
+                    if (fingerprintManager.hasEnrolledFingerprints()) {
+                        editor.putInt("fingerInt", 1);
+                        editor.commit();
+                        Toast.makeText(this, "Fingerprint lock screen set", Toast.LENGTH_LONG).show();
+                        return true;
+                    } else {
+                        Toast.makeText(this, "Please enroll a fingerprint", Toast.LENGTH_LONG).show();
+                        return true;
+                    }
+                }
+                else{
+                    editor.putInt("fingerInt", 0);
+                    Toast.makeText(this, "Fingerprint lock screen disabled", Toast.LENGTH_LONG).show();
+                    editor.commit();
+                }
         }
         return super.onContextItemSelected(item);
     }
@@ -318,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
                 fingerprint();
             }
         }
-        /*
+
         if (requestCode == 4) {
             if (resultCode == RESULT_OK && null != data) {
 
@@ -332,7 +415,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        */
     }
 
     public void showNotes() {
@@ -368,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void delete(final int pos, final int side){
 
-        AlertDialog.Builder a_builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(this);
         a_builder.setMessage("Are you sure you want to delete this note?");
         a_builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
@@ -411,9 +493,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
-        AlertDialog alert = a_builder.create();
-        alert.setTitle("WARNING");
-        alert.show();
+        a_builder.show();
 
     }
 
@@ -429,47 +509,4 @@ public class MainActivity extends AppCompatActivity {
         return outtoLeft;
     }
 
-/*
-    private void promptSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "SPEAK");
-        try {
-            startActivityForResult(intent, 4);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(), "SPEAK", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void command(View view) {
-        promptSpeechInput();
-    }
-
-
-    private Animation outToLeftAnimation() {
-        int duration = 200;
-        Animation outtoLeft = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, -1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        outtoLeft.setDuration(duration);
-        outtoLeft.setInterpolator(new AccelerateInterpolator(1));
-        return outtoLeft;
-    }
-
-    private Animation outToRightAnimation() {
-        int duration = 200;
-        Animation outtoRight = new TranslateAnimation(
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, +1.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f,
-                Animation.RELATIVE_TO_PARENT, 0.0f);
-        outtoRight.setDuration(duration);
-        outtoRight.setFillAfter(true);
-        outtoRight.setInterpolator(new AccelerateInterpolator(1));
-        return outtoRight;
-    }
-    */
 }
