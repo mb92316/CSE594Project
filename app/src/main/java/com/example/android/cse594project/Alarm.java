@@ -95,8 +95,8 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         String test = yearFinal + "-" + monthFinal + "-" + dayFinal + " " + hourFinal + ":" + minuteFinal;
         Date date = new Date();
         Date d1 = new Date();
-        int alarmID = dbHandler.getAlarm(id);
-        int alarmType = dbHandler.getAlarmType(id);
+        int alarmID = dbHandler.getAlarm(id);       // Gets alarm id from dbhandler method getAlarm
+        int alarmType = dbHandler.getAlarmType(id); // Gets alarm type from dbhandler method getAlarmType
         if(alarmID != -1) {
             cancel(alarmID, alarmType);
         }
@@ -122,7 +122,7 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         }
     }
 
-    private void scheduleNoteNotification(long delay) {
+    private void scheduleNoteNotification(long delay) { // Make regular notification
         editor = pref.edit();
         alarmID++;
         editor.putInt("AlarmID", alarmID);
@@ -132,14 +132,14 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
-        dbHandler.updateDate(id, dateString );
-        dbHandler.updateAlarm(id, alarmID);
-        dbHandler.updateAlarmType(id, 1);
+        dbHandler.updateDate(id, dateString ); // Sets value of date by id
+        dbHandler.updateAlarm(id, alarmID); // Sets value of date by id
+        dbHandler.updateAlarmType(id, 1); // Sets value of date by id
         finish();
     }
 
 
-    private void scheduleVoiceNotification(long delay) {
+    private void scheduleVoiceNotification(long delay) {    // Make speech-based notification
         editor = pref.edit();
         alarmID++;
         editor.putInt("AlarmID", alarmID);
@@ -149,9 +149,9 @@ public class Alarm extends AppCompatActivity implements DatePickerDialog.OnDateS
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), alarmID, notificationIntent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent);
-        dbHandler.updateDate(id, dateString );
-        dbHandler.updateAlarm(id, alarmID);
-        dbHandler.updateAlarmType(id, 2);
+        dbHandler.updateDate(id, dateString );  // Sets value of date by id
+        dbHandler.updateAlarm(id, alarmID);  // Sets value of date by id
+        dbHandler.updateAlarmType(id, 2);  // Sets value of date by id
         finish();
     }
 

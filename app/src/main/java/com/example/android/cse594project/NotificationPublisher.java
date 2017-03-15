@@ -28,14 +28,14 @@ public class NotificationPublisher extends BroadcastReceiver {
             id = intent.getIntExtra("id", 0);
             notificationManager.notify(id, notification);
         }
-        dbHandler.updateDate(id, "null");
+        dbHandler.updateDate(id, "null"); // Sets defaults values
         dbHandler.updateAlarmType(id, -1);
         dbHandler.updateAlarm(id, -1);
     }
 
     public void getNote() {
         dbHandler = new DBHandler(mcontext, null, null, 1);
-        note = dbHandler.getNote(noteID);
+        note = dbHandler.getNote(noteID);   // Get note by id
     }
 
     private Notification getNotification(String content) {

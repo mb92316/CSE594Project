@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
+                                                    // Declares the data fields for the sql database
 public class DBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "noteDB.db";
@@ -15,12 +15,12 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_DATE = "Date";
     public static final String COLUMN_ALARMID = "AlarmID";
     public static final String COLUMN_ALARMTYPE = "AlarmType";
-
+    // DBHandler's constructor passes it's arguments to send to SQLiteOpenHelper's constructor
     public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 
-    @Override
+    @Override       // Passes SQLite database object where execSQL method is called to execute the string table
     public void onCreate(SQLiteDatabase db) {
         String table = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NOTE + " TEXT, " +
@@ -33,32 +33,32 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
-
+                                // Cursor is used as temporary storage for a query
     public Cursor getNotes() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, new String[]{COLUMN_ID, COLUMN_NOTE}, null, null, null, null, null);
         if (cursor != null) {
-            cursor.moveToFirst();
+            cursor.moveToFirst(); // Move cursor to the first row
             return cursor;
         } else {
             return null;
         }
     }
-
+                                            // ContentValues is name value pair for inserting or updating database tables.
     public void addNote(String note) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NOTE, note);
-        values.put(COLUMN_DATE, "null");
-        values.put(COLUMN_ALARMTYPE, -1);
-        values.put(COLUMN_ALARMID, -1);
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(TABLE_NAME, null, values);
+        values.put(COLUMN_NOTE, note); // Insert new note to column note
+        values.put(COLUMN_DATE, "null");    // These are the default values for the alarm of the note
+        values.put(COLUMN_ALARMTYPE, -1);   // ^ Default value
+        values.put(COLUMN_ALARMID, -1);     // ^ Default value
+        SQLiteDatabase db = this.getWritableDatabase(); // Open database to write in note
+        db.insert(TABLE_NAME, null, values);            // Insert values to table
     }
 
-    public void deleteNote(int id) {
-        String idString[] = {Integer.toString(id)};
-        SQLiteDatabase db = this.getReadableDatabase();
-        db.delete(TABLE_NAME, COLUMN_ID + " = ?", idString);
+    public void deleteNote(int id) {                    // Pass in id of the note
+        String idString[] = {Integer.toString(id)};     // Convert the integer value to a string value
+        SQLiteDatabase db = this.getReadableDatabase(); // Open the database
+        db.delete(TABLE_NAME, COLUMN_ID + " = ?", idString); // Delete the note in the table with the id (idStirng)
     }
 
     public void deleteNoteCB(int id, Context context) {
@@ -71,19 +71,19 @@ public class DBHandler extends SQLiteOpenHelper {
 
 
 
-    public void updateNote(int id, String n) {
-        ContentValues note = new ContentValues();
-        note.put(COLUMN_NOTE, n);
+    public void updateNote(int id, String n) {      
+        ContentValues note = new ContentValues(); // Make an instance of ContentValues called note
+        note.put(COLUMN_NOTE, n); // Add value to the set
         SQLiteDatabase db = this.getReadableDatabase();
-        db.update(TABLE_NAME, note, "_id = ? ", new String[]{Integer.toString(id)});
+        db.update(TABLE_NAME, note, "_id = ? ", new String[]{Integer.toString(id)}); // Update the note at the id location
     }
 
 
-    public String getNote(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String note = "null";
-        Cursor c = db.query(TABLE_NAME, new String[] {COLUMN_NOTE}, COLUMN_ID + "=" + id, null, null, null, null);
-        if(c.getCount() == 1){
+    public String getNote(int id) {                     // Get note by id
+        SQLiteDatabase db = this.getReadableDatabase(); // Open the database
+        String note = "null";                           // Temporary value for string
+        Cursor c = db.query(TABLE_NAME, new String[] {COLUMN_NOTE}, COLUMN_ID + "=" + id, null, null, null, null); // Find the note by id with a query
+        if(c.getCount() == 1){                          // Returns number of rows in cursor
             c.moveToFirst();
             note = c.getString(c.getColumnIndex(COLUMN_NOTE));
         }

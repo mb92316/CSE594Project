@@ -24,10 +24,10 @@ public class AddNote extends AppCompatActivity {
     }
 
     public void addNote(View view) {
-        String n = noteField.getText().toString();
-        if(!n.equals("")){
-        String encryptedNote = Crypt.encrypt(n);
-        dbHandler.addNote(encryptedNote);
+        String n = noteField.getText().toString();  // Save text from noteField store in 'n'
+        if(!n.equals("")){                          // If it is not an empty string
+        String encryptedNote = Crypt.encrypt(n);    // Encrypt the string
+        dbHandler.addNote(encryptedNote);           // call addNote method and pass in encryptedNote, this will provoke a query.
         Intent resultIntent = new Intent();
         resultIntent.putExtra("noteinfo", "Note Added");
         setResult(Activity.RESULT_OK, resultIntent);

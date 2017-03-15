@@ -34,7 +34,7 @@ public class NoteHelper extends AppCompatActivity {
     }
 
     public void deleteNote(View view) {
-        dbHandler.deleteNote(id);
+        dbHandler.deleteNote(id);           // Deletes note by id
         Intent resultIntent = new Intent();
         resultIntent.putExtra("noteinfo", "Note Deleted");
         setResult(Activity.RESULT_OK, resultIntent);
@@ -44,7 +44,7 @@ public class NoteHelper extends AppCompatActivity {
     public void updateNote(View view) {
         String n = noteField.getText().toString();
         String encryptedNote = Crypt.encrypt(n);
-        dbHandler.updateNote(id, encryptedNote );
+        dbHandler.updateNote(id, encryptedNote );   // Update note by id
         Intent resultIntent = new Intent();
         resultIntent.putExtra("noteinfo", "Note Updated");
         setResult(Activity.RESULT_OK, resultIntent);

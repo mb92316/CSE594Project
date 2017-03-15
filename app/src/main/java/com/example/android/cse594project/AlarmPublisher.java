@@ -23,14 +23,14 @@ public class AlarmPublisher extends BroadcastReceiver {
             intent1.putExtra(NOTIFICATION, note);
             context.startService(intent1);
         }
-        dbHandler.updateDate(id, "null");
+        dbHandler.updateDate(id, "null");   // Default values
         dbHandler.updateAlarmType(id, -1);
         dbHandler.updateAlarm(id, -1);
     }
 
     public void getNote() {
         dbHandler = new DBHandler(mcontext, null, null, 1);
-        note = dbHandler.getNote(id);
+        note = dbHandler.getNote(id);   // Get note by id
     }
 }
 
